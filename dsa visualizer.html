@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D DSA Visualizer · Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0e1a 0%, #1a1f2f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            perspective: 1200px;
+        }
+
+        .container {
+            max-width: 1500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 48px;
+            padding: 28px 30px 36px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transform: rotateX(2deg);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .container:hover {
+            transform: rotateX(0deg) scale(1.01);
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            letter-spacing: -0.3px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 16px;
+            text-shadow: 0 2px 20px rgba(0, 150, 255, 0.2);
+        }
+
+        h1 i {
+            color: #00b4ff;
+            background: rgba(0, 180, 255, 0.15);
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 2rem;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 180, 255, 0.5); }
+        }
+
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .ds-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ds-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transform: translateZ(0);
+        }
+
+        .ds-tab i {
+            font-size: 1.1rem;
+            color: #00b4ff;
+        }
+
+        .ds-tab:hover {
+            background: rgba(0, 180, 255, 0.12);
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(0, 180, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 180, 255, 0.15);
+        }
+
+        .ds-tab.active {
+            background: linear-gradient(135deg, #00b4ff, #0066cc);
+            border-color: #00b4ff;
+            color: white;
+            box-shadow: 0 8px 30px rgba(0, 180, 255, 0.4);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .ds-tab.active i {
+            color: white;
+        }
+
+        .panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 32px;
+            padding: 24px 22px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.03);
+            transform-style: preserve-3d;
+            animation: panelFloat 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes panelFloat {
+            0% { opacity: 0; transform: translateY(30px) rotateX(-10deg) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* HOME PANEL */
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            padding: 20px 10px;
+        }
+
+        .home-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 32px 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg) translateZ(0);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-card:hover {
+            transform: rotateY(5deg) rotateX(3deg) translateZ(30px) scale(1.03);
+            background: rgba(0, 180, 255, 0.1);
+            border-color: rgba(0, 180, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 180, 255, 0.15);
+        }
+
+        .home-card i {
+            font-size: 3.5rem;
+            color: #00b4ff;
+            margin-bottom: 16px;
+            display: block;
+            text-shadow: 0 0 30px rgba(0, 180, 255, 0.2);
+        }
+
+        .home-card h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .home-card p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .home-card .badge {
+            display: inline-block;
+            background: rgba(0, 180, 255, 0.15);
+            color: #00b4ff;
+            padding: 4px 14px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 12px;
+            border: 1px solid rgba(0, 180, 255, 0.1);
+        }
+
+        .home-hero {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 10px;
+        }
+
+        .home-hero h2 {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .home-hero p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .visual-area {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 28px;
+            padding: 28px 20px;
+            min-height: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 4px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 14px 18px;
+            transition: 0.3s;
+            transform-style: preserve-3d;
+        }
+
+        /* 3D Visual Items - Crystal Clear */
+        .visual-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 60px;
+            text-align: center;
+            transform-style: preserve-3d;
+            transform: rotateY(0deg) rotateX(0deg) translateZ(0);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .visual-item:hover {
+            transform: rotateY(10deg) rotateX(5deg) translateZ(20px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 180, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .visual-item.slide-in-3d {
+            animation: slideIn3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes slideIn3D {
+            0% { transform: rotateY(-30deg) rotateX(20deg) translateZ(-50px) scale(0.5); opacity: 0; }
+            100% { transform: rotateY(0deg) rotateX(0deg) translateZ(0) scale(1); opacity: 1; }
+        }
+
+        .visual-item.pop-out-3d {
+            animation: popOut3D 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes popOut3D {
+            0% { transform: rotateY(0deg) rotateX(0deg) translateZ(0) scale(1); opacity: 1; }
+            100% { transform: rotateY(40deg) rotateX(20deg) translateZ(-80px) scale(0.3); opacity: 0; }
+        }
+
+        .visual-item.highlight-3d {
+            background: rgba(0, 180, 255, 0.25);
+            border-color: #00b4ff;
+            box-shadow: 0 0 40px rgba(0, 180, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: rotateY(5deg) rotateX(3deg) translateZ(30px) scale(1.08);
+        }
+
+        .visual-item.comparing-3d {
+            background: rgba(255, 107, 53, 0.25);
+            border-color: #ff6b35;
+            box-shadow: 0 0 40px rgba(255, 107, 53, 0.3);
+            animation: pulse3D 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse3D {
+            0% { transform: rotateY(-3deg) rotateX(3deg) translateZ(10px) scale(1); }
+            100% { transform: rotateY(3deg) rotateX(-3deg) translateZ(30px) scale(1.05); }
+        }
+
+        .visual-item.sorted-3d {
+            background: rgba(0, 210, 255, 0.2);
+            border-color: #00d2ff;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.2);
+            transform: rotateY(0deg) rotateX(0deg) translateZ(10px);
+        }
+
+        /* Stack Container 3D - Crystal Clear */
+        .stack-container-3d {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 28px;
+            border: 2px solid rgba(0, 180, 255, 0.1);
+            min-height: 140px;
+            transform-style: preserve-3d;
+            transform: rotateX(3deg);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: inset 0 0 60px rgba(0, 180, 255, 0.03);
+        }
+
+        .stack-container-3d:hover {
+            transform: rotateX(0deg) rotateY(2deg);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(0, 180, 255, 0.05);
+        }
+
+        .stack-container-3d .visual-item {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 14px 24px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .stack-container-3d .visual-item.stack-top-3d {
+            background: rgba(249, 168, 37, 0.25);
+            color: #fff;
+            border-color: #f9a825;
+            box-shadow: 0 10px 40px rgba(249, 168, 37, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateZ(20px) scale(1.04);
+        }
+
+        .stack-container-3d .visual-item.slide-in-3d {
+            animation: stackSlide3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes stackSlide3D {
+            0% { transform: translateY(40px) rotateX(-20deg) scale(0.6); opacity: 0; }
+            100% { transform: translateY(0) rotateX(0) scale(1); opacity: 1; }
+        }
+
+        .stack-container-3d .visual-item.pop-out-3d {
+            animation: stackPop3D 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes stackPop3D {
+            0% { transform: translateY(0) rotateX(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-60px) rotateX(30deg) scale(0.4); opacity: 0; }
+        }
+
+        .stack-container-3d .empty-message {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            padding: 20px 0;
+        }
+
+        .empty-message {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.7;
+            letter-spacing: 0.3px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 18px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 14px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .controls input {
+            border: none;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            width: 120px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: 0.15s;
+            font-weight: 500;
+        }
+
+        .controls input:focus {
+            outline: 2px solid #00b4ff;
+            border-color: transparent;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .controls input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .controls button {
+            background: rgba(255, 255, 255, 0.04);
+            border: none;
+            padding: 9px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls button i {
+            color: #00b4ff;
+            font-size: 0.95rem;
+        }
+
+        .controls button:hover {
+            background: rgba(0, 180, 255, 0.15);
+            border-color: rgba(0, 180, 255, 0.3);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 180, 255, 0.2);
+        }
+
+        .controls button.primary {
+            background: linear-gradient(135deg, #00b4ff, #0066cc);
+            border-color: #00b4ff;
+            color: white;
+        }
+
+        .controls button.primary i {
+            color: white;
+        }
+
+        .controls button.primary:hover {
+            background: linear-gradient(135deg, #00ccff, #0077ee);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 180, 255, 0.4);
+        }
+
+        .controls button.danger {
+            background: linear-gradient(135deg, #ff4757, #c0392b);
+            border-color: #ff4757;
+            color: white;
+        }
+        .controls button.danger i { color: white; }
+        .controls button.danger:hover {
+            background: linear-gradient(135deg, #ff6b7a, #e74c3c);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+        }
+
+        .controls button.outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .controls button.success {
+            background: linear-gradient(135deg, #00d2ff, #00a86b);
+            border-color: #00d2ff;
+            color: white;
+        }
+        .controls button.success i { color: white; }
+        .controls button.success:hover {
+            background: linear-gradient(135deg, #00e5ff, #00c853);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4);
+        }
+
+        .info-badge {
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 5px 18px;
+            border-radius: 60px;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .sort-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 14px 4px 18px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .sort-selector select {
+            border: none;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .sort-selector select option {
+            background: #1a1f2f;
+            color: #fff;
+        }
+
+        .sort-selector select:focus {
+            border-color: #00b4ff;
+        }
+
+        @media (max-width: 780px) {
+            .container { padding: 16px; }
+            h1 { font-size: 1.8rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .info-badge { margin-left: 0; text-align: center; }
+            .ds-tab { padding: 8px 16px; font-size: 0.9rem; }
+            .sort-selector { flex-wrap: wrap; }
+            .stack-container-3d { max-width: 100%; }
+            .home-grid { grid-template-columns: 1fr; }
+            .home-hero h2 { font-size: 1.6rem; }
+        }
+
+        /* 3D Floating Particles Effect */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, -100px) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background orbs -->
+    <div class="glow-orb" style="width: 400px; height: 400px; background: #00b4ff; top: -100px; right: -100px;"></div>
+    <div class="glow-orb" style="width: 300px; height: 300px; background: #ff6b35; bottom: -50px; left: -50px; animation-delay: 4s;"></div>
+    <div class="glow-orb" style="width: 250px; height: 250px; background: #00d2ff; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 2s;"></div>
+
+    <div class="container">
+        <h1><i class="fas fa-cube"></i> 3D DSA Visualizer</h1>
+
+        <div class="top-bar">
+            <div class="ds-tabs">
+                <div class="ds-tab active" data-panel="home"><i class="fas fa-home"></i> Home</div>
+                <div class="ds-tab" data-panel="array"><i class="fas fa-list"></i> Array</div>
+                <div class="ds-tab" data-panel="linkedlist"><i class="fas fa-link"></i> Linked List</div>
+                <div class="ds-tab" data-panel="stack"><i class="fas fa-layer-group"></i> Stack</div>
+                <div class="ds-tab" data-panel="queue"><i class="fas fa-arrow-right-to-bracket"></i> Queue</div>
+            </div>
+            <div class="sort-selector" id="sortSelector">
+                <i class="fas fa-sort" style="color:#00b4ff;"></i>
+                <select id="sortAlgorithm">
+                    <option value="bubble">Bubble</option>
+                    <option value="selection">Selection</option>
+                    <option value="insertion">Insertion</option>
+                </select>
+                <button class="success" id="sortBtn"><i class="fas fa-play"></i> Sort</button>
+                <button class="outline" id="shuffleBtn"><i class="fas fa-random"></i> Shuffle</button>
+            </div>
+        </div>
+
+        <!-- HOME PANEL -->
+        <div id="panel-home" class="panel active">
+            <div class="home-hero">
+                <h2>🚀 Explore Data Structures in 3D</h2>
+                <p>Click any card below to visualize operations with stunning 3D animations</p>
+            </div>
+            <div class="home-grid">
+                <div class="home-card" data-panel="array">
+                    <i class="fas fa-list"></i>
+                    <h3>Array</h3>
+                    <p>Push, Pop, Shift, Unshift with 3D slide animations</p>
+                    <span class="badge">4 operations</span>
+                </div>
+                <div class="home-card" data-panel="linkedlist">
+                    <i class="fas fa-link"></i>
+                    <h3>Linked List</h3>
+                    <p>Add/Remove head & tail with 3D transformations</p>
+                    <span class="badge">4 operations</span>
+                </div>
+                <div class="home-card" data-panel="stack">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>Stack</h3>
+                    <p>Push & Pop with container-style 3D animations</p>
+                    <span class="badge">3 operations</span>
+                </div>
+                <div class="home-card" data-panel="queue">
+                    <i class="fas fa-arrow-right-to-bracket"></i>
+                    <h3>Queue</h3>
+                    <p>Enqueue & Dequeue with 3D visual feedback</p>
+                    <span class="badge">4 operations</span>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:16px;color:rgba(255,255,255,0.3);font-size:0.9rem;">
+                <i class="fas fa-cube"></i> Hover over elements to see 3D effects · Sorting available on Array
+            </div>
+        </div>
+
+        <!-- ARRAY PANEL -->
+        <div id="panel-array" class="panel">
+            <div class="visual-area" id="array-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="array-input" placeholder="value" value="42">
+                    <button class="primary" id="arr-push"><i class="fas fa-plus-circle"></i> Push</button>
+                    <button class="primary" id="arr-unshift"><i class="fas fa-arrow-right"></i> Unshift</button>
+                    <button class="danger" id="arr-pop"><i class="fas fa-minus-circle"></i> Pop</button>
+                    <button class="danger" id="arr-shift"><i class="fas fa-arrow-left"></i> Shift</button>
+                </div>
+                <button class="outline" id="arr-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="array-info">size: 0</span>
+            </div>
+        </div>
+
+        <!-- LINKED LIST PANEL -->
+        <div id="panel-linkedlist" class="panel">
+            <div class="visual-area" id="list-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="list-input" placeholder="value" value="7">
+                    <button class="primary" id="list-addhead"><i class="fas fa-plus"></i> Add head</button>
+                    <button class="primary" id="list-addtail"><i class="fas fa-plus-circle"></i> Add tail</button>
+                    <button class="danger" id="list-removehead"><i class="fas fa-minus"></i> Remove head</button>
+                    <button class="danger" id="list-removetail"><i class="fas fa-minus-circle"></i> Remove tail</button>
+                </div>
+                <button class="outline" id="list-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="list-info">size: 0</span>
+            </div>
+        </div>
+
+        <!-- STACK PANEL (3D Container) -->
+        <div id="panel-stack" class="panel">
+            <div class="visual-area" style="background: rgba(0,0,0,0.15);">
+                <div class="stack-container-3d" id="stack-visual">
+                    <!-- dynamically filled -->
+                </div>
+            </div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="stack-input" placeholder="value" value="99">
+                    <button class="primary" id="stack-push"><i class="fas fa-arrow-up"></i> Push</button>
+                    <button class="danger" id="stack-pop"><i class="fas fa-arrow-down"></i> Pop</button>
+                    <button class="outline" id="stack-peek"><i class="fas fa-eye"></i> Peek</button>
+                </div>
+                <button class="outline" id="stack-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="stack-info">size: 0</span>
+            </div>
+        </div>
+
+        <!-- QUEUE PANEL -->
+        <div id="panel-queue" class="panel">
+            <div class="visual-area" id="queue-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="queue-input" placeholder="value" value="33">
+                    <button class="primary" id="queue-enqueue"><i class="fas fa-plus"></i> Enqueue</button>
+                    <button class="danger" id="queue-dequeue"><i class="fas fa-minus"></i> Dequeue</button>
+                    <button class="outline" id="queue-front"><i class="fas fa-arrow-right"></i> Front</button>
+                    <button class="outline" id="queue-rear"><i class="fas fa-arrow-left"></i> Rear</button>
+                </div>
+                <button class="outline" id="queue-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="queue-info">size: 0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ----- state -----
+            let arr = [12, 5, 8, 23, 1, 17];
+            let list = [3, 17, 22, 9];
+            let stack = [10, 20, 30];
+            let queue = [5, 15, 25];
+
+            // DOM refs
+            const arrayVisual = document.getElementById('array-visual');
+            const listVisual = document.getElementById('list-visual');
+            const stackVisual = document.getElementById('stack-visual');
+            const queueVisual = document.getElementById('queue-visual');
+
+            const arrayInfo = document.getElementById('array-info');
+            const listInfo = document.getElementById('list-info');
+            const stackInfo = document.getElementById('stack-info');
+            const queueInfo = document.getElementById('queue-info');
+
+            // ----- render helpers with 3D animations -----
+            function renderArray(highlightIndices = [], compareIndices = [], sortedIndices = [], animateIn = false) {
+                if (arr.length === 0) {
+                    arrayVisual.innerHTML = `<span class="empty-message">empty</span>`;
+                } else {
+                    let html = arr.map((v, i) => {
+                        let cls = 'visual-item';
+                        if (sortedIndices.includes(i)) cls += ' sorted-3d';
+                        else if (highlightIndices.includes(i)) cls += ' highlight-3d';
+                        else if (compareIndices.includes(i)) cls += ' comparing-3d';
+                        if (animateIn) cls += ' slide-in-3d';
+                        return `<div class="${cls}" style="transition-delay: ${i * 40}ms">${v}</div>`;
+                    }).join('');
+                    arrayVisual.innerHTML = html;
+                }
+                arrayInfo.textContent = `size: ${arr.length}`;
+            }
+
+            function renderList(animateIn = false) {
+                if (list.length === 0) {
+                    listVisual.innerHTML = `<span class="empty-message">empty list</span>`;
+                } else {
+                    let html = list.map((v, i) => {
+                        let cls = 'visual-item';
+                        if (animateIn) cls += ' slide-in-3d';
+                        let arrow = (i < list.length-1) ? `<span style="font-size:1.8rem; opacity:0.3; margin:0 2px; color:rgba(255,255,255,0.3);">→</span>` : '';
+                        return `<div class="${cls}" style="transition-delay: ${i * 40}ms">${v}</div>${arrow}`;
+                    }).join('');
+                    listVisual.innerHTML = html;
+                }
+                listInfo.textContent = `size: ${list.length}`;
+            }
+
+            // --- STACK RENDER (3D container) ---
+            function renderStack(animateIn = false, popOutIndex = -1) {
+                if (stack.length === 0) {
+                    stackVisual.innerHTML = `<span class="empty-message">empty stack</span>`;
+                } else {
+                    let html = stack.map((v, i) => {
+                        let cls = 'visual-item';
+                        if (i === stack.length-1) cls += ' stack-top-3d';
+                        if (i === popOutIndex) cls += ' pop-out-3d';
+                        else if (animateIn && i === stack.length-1) cls += ' slide-in-3d';
+                        return `<div class="${cls}" style="transition-delay: ${(stack.length - 1 - i) * 50}ms">${v}</div>`;
+                    }).join('');
+                    stackVisual.innerHTML = html;
+                }
+                stackInfo.textContent = `size: ${stack.length}`;
+            }
+
+            function renderQueue(animateIn = false) {
+                if (queue.length === 0) {
+                    queueVisual.innerHTML = `<span class="empty-message">empty queue</span>`;
+                } else {
+                    let html = queue.map((v, i) => {
+                        let cls = 'visual-item';
+                        if (i === 0) cls += ' highlight-3d';
+                        if (i === queue.length-1) cls += ' comparing-3d';
+                        if (animateIn) cls += ' slide-in-3d';
+                        return `<div class="${cls}" style="transition-delay: ${i * 40}ms">${v}</div>`;
+                    }).join('');
+                    queueVisual.innerHTML = html;
+                }
+                queueInfo.textContent = `size: ${queue.length}`;
+            }
+
+            function renderAll(animateIn = false) {
+                renderArray([], [], [], animateIn);
+                renderList(animateIn);
+                renderStack(animateIn);
+                renderQueue(animateIn);
+            }
+
+            // ----- SORTING (async with 3D visuals) -----
+            async function sleep(ms = 160) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            async function sortArray() {
+                const algo = document.getElementById('sortAlgorithm').value;
+                const n = arr.length;
+                if (n <= 1) return;
+
+                let a = [...arr];
+
+                if (algo === 'bubble') {
+                    for (let i = 0; i < n-1; i++) {
+                        for (let j = 0; j < n-i-1; j++) {
+                            renderArray([], [j, j+1], []);
+                            await sleep(140);
+                            if (a[j] > a[j+1]) {
+                                [a[j], a[j+1]] = [a[j+1], a[j]];
+                                arr = [...a];
+                                renderArray([j, j+1], [], []);
+                                await sleep(140);
+                            }
+                        }
+                        let sorted = [];
+                        for (let k = n-i-1; k < n; k++) sorted.push(k);
+                        renderArray([], [], sorted);
+                        await sleep(100);
+                    }
+                    let all = Array.from({length: n}, (_, i) => i);
+                    renderArray([], [], all);
+                } 
+                else if (algo === 'selection') {
+                    for (let i = 0; i < n-1; i++) {
+                        let minIdx = i;
+                        for (let j = i+1; j < n; j++) {
+                            renderArray([i], [j, minIdx], []);
+                            await sleep(120);
+                            if (a[j] < a[minIdx]) minIdx = j;
+                        }
+                        if (minIdx !== i) {
+                            [a[i], a[minIdx]] = [a[minIdx], a[i]];
+                            arr = [...a];
+                            renderArray([i, minIdx], [], []);
+                            await sleep(140);
+                        }
+                        let sorted = [];
+                        for (let k = 0; k <= i; k++) sorted.push(k);
+                        renderArray([], [], sorted);
+                        await sleep(100);
+                    }
+                    let all = Array.from({length: n}, (_, i) => i);
+                    renderArray([], [], all);
+                } 
+                else if (algo === 'insertion') {
+                    for (let i = 1; i < n; i++) {
+                        let key = a[i];
+                        let j = i-1;
+                        while (j >= 0 && a[j] > key) {
+                            renderArray([i], [j, j+1], []);
+                            await sleep(120);
+                            a[j+1] = a[j];
+                            arr = [...a];
+                            renderArray([j+1], [j], []);
+                            await sleep(120);
+                            j--;
+                        }
+                        a[j+1] = key;
+                        arr = [...a];
+                        let sorted = [];
+                        for (let k = 0; k <= i; k++) sorted.push(k);
+                        renderArray([], [], sorted);
+                        await sleep(100);
+                    }
+                    let all = Array.from({length: n}, (_, i) => i);
+                    renderArray([], [], all);
+                }
+                arr = [...a];
+                renderArray([], [], Array.from({length: n}, (_, i) => i));
+            }
+
+            function shuffleArray() {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                renderArray([], [], [], true);
+            }
+
+            // ----- operations with 3D animation -----
+            function arrPush() {
+                const val = parseInt(document.getElementById('array-input').value);
+                if (isNaN(val)) return;
+                arr.push(val);
+                renderArray([], [], [], true);
+            }
+            function arrUnshift() {
+                const val = parseInt(document.getElementById('array-input').value);
+                if (isNaN(val)) return;
+                arr.unshift(val);
+                renderArray([], [], [], true);
+            }
+            function arrPop() {
+                if (arr.length) arr.pop(); else alert('Array is empty');
+                renderArray([], [], [], true);
+            }
+            function arrShift() {
+                if (arr.length) arr.shift(); else alert('Array is empty');
+                renderArray([], [], [], true);
+            }
+            function arrReset() {
+                arr = [12, 5, 8, 23, 1, 17];
+                renderArray([], [], [], true);
+            }
+
+            // Linked List
+            function listAddHead() {
+                const val = parseInt(document.getElementById('list-input').value);
+                if (isNaN(val)) return;
+                list.unshift(val);
+                renderList(true);
+            }
+            function listAddTail() {
+                const val = parseInt(document.getElementById('list-input').value);
+                if (isNaN(val)) return;
+                list.push(val);
+                renderList(true);
+            }
+            function listRemoveHead() {
+                if (list.length) list.shift(); else alert('List is empty');
+                renderList(true);
+            }
+            function listRemoveTail() {
+                if (list.length) list.pop(); else alert('List is empty');
+                renderList(true);
+            }
+            function listReset() {
+                list = [3, 17, 22, 9];
+                renderList(true);
+            }
+
+            // --- STACK (with 3D pop-out animation) ---
+            function stackPush() {
+                const val = parseInt(document.getElementById('stack-input').value);
+                if (isNaN(val)) return;
+                stack.push(val);
+                renderStack(true);
+            }
+
+            function stackPop() {
+                if (stack.length === 0) {
+                    alert('Stack is empty');
+                    return;
+                }
+                const topIndex = stack.length - 1;
+                renderStack(false, topIndex);
+                setTimeout(() => {
+                    stack.pop();
+                    renderStack(false);
+                }, 400);
+            }
+
+            function stackPeek() {
+                if (stack.length) alert(`Top: ${stack[stack.length-1]}`);
+                else alert('Stack is empty');
+            }
+
+            function stackReset() {
+                stack = [10, 20, 30];
+                renderStack(true);
+            }
+
+            // Queue
+            function queueEnqueue() {
+                const val = parseInt(document.getElementById('queue-input').value);
+                if (isNaN(val)) return;
+                queue.push(val);
+                renderQueue(true);
+            }
+            function queueDequeue() {
+                if (queue.length) queue.shift(); else alert('Queue is empty');
+                renderQueue(true);
+            }
+            function queueFront() {
+                if (queue.length) alert(`Front: ${queue[0]}`);
+                else alert('Queue is empty');
+            }
+            function queueRear() {
+                if (queue.length) alert(`Rear: ${queue[queue.length-1]}`);
+                else alert('Queue is empty');
+            }
+            function queueReset() {
+                queue = [5, 15, 25];
+                renderQueue(true);
+            }
+
+            // ----- tab switching -----
+            const tabs = document.querySelectorAll('.ds-tab');
+            const panels = {
+                home: document.getElementById('panel-home'),
+                array: document.getElementById('panel-array'),
+                linkedlist: document.getElementById('panel-linkedlist'),
+                stack: document.getElementById('panel-stack'),
+                queue: document.getElementById('panel-queue')
+            };
+
+            // Home card click handler
+            document.querySelectorAll('.home-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const panel = card.dataset.panel;
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelector(`.ds-tab[data-panel="${panel}"]`)?.classList.add('active');
+                    Object.keys(panels).forEach(key => {
+                        panels[key].classList.toggle('active', key === panel);
+                    });
+                    renderAll(true);
+                });
+            });
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const panelId = tab.dataset.panel;
+                    Object.keys(panels).forEach(key => {
+                        panels[key].classList.toggle('active', key === panelId);
+                    });
+                    renderAll(true);
+                });
+            });
+
+            // ----- attach events -----
+            document.getElementById('arr-push').addEventListener('click', arrPush);
+            document.getElementById('arr-unshift').addEventListener('click', arrUnshift);
+            document.getElementById('arr-pop').addEventListener('click', arrPop);
+            document.getElementById('arr-shift').addEventListener('click', arrShift);
+            document.getElementById('arr-reset').addEventListener('click', arrReset);
+
+            document.getElementById('list-addhead').addEventListener('click', listAddHead);
+            document.getElementById('list-addtail').addEventListener('click', listAddTail);
+            document.getElementById('list-removehead').addEventListener('click', listRemoveHead);
+            document.getElementById('list-removetail').addEventListener('click', listRemoveTail);
+            document.getElementById('list-reset').addEventListener('click', listReset);
+
+            document.getElementById('stack-push').addEventListener('click', stackPush);
+            document.getElementById('stack-pop').addEventListener('click', stackPop);
+            document.getElementById('stack-peek').addEventListener('click', stackPeek);
+            document.getElementById('stack-reset').addEventListener('click', stackReset);
+
+            document.getElementById('queue-enqueue').addEventListener('click', queueEnqueue);
+            document.getElementById('queue-dequeue').addEventListener('click', queueDequeue);
+            document.getElementById('queue-front').addEventListener('click', queueFront);
+            document.getElementById('queue-rear').addEventListener('click', queueRear);
+            document.getElementById('queue-reset').addEventListener('click', queueReset);
+
+            document.getElementById('sortBtn').addEventListener('click', sortArray);
+            document.getElementById('shuffleBtn').addEventListener('click', shuffleArray);
+
+            // init
+            renderAll(true);
+
+            // enter key for inputs
+            document.querySelectorAll('.controls input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const panel = input.closest('.panel');
+                        if (panel) {
+                            const primaryBtn = panel.querySelector('.controls button.primary');
+                            if (primaryBtn) primaryBtn.click();
+                        }
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
