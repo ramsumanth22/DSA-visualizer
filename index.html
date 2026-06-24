@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D DSA Visualizer · Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-orb" style="width: 400px; height: 400px; background: #00b4ff; top: -100px; right: -100px;"></div>
+    <div class="glow-orb" style="width: 300px; height: 300px; background: #ff6b35; bottom: -50px; left: -50px; animation-delay: 4s;"></div>
+    <div class="glow-orb" style="width: 250px; height: 250px; background: #00d2ff; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 2s;"></div>
+
+    <div class="container">
+        <h1><i class="fas fa-cube"></i> 3D DSA Visualizer</h1>
+
+        <div class="top-bar">
+            <div class="ds-tabs">
+                <div class="ds-tab active" data-panel="home"><i class="fas fa-home"></i> Home</div>
+                <div class="ds-tab" data-panel="array"><i class="fas fa-list"></i> Array</div>
+                <div class="ds-tab" data-panel="linkedlist"><i class="fas fa-link"></i> Linked List</div>
+                <div class="ds-tab" data-panel="stack"><i class="fas fa-layer-group"></i> Stack</div>
+                <div class="ds-tab" data-panel="queue"><i class="fas fa-arrow-right-to-bracket"></i> Queue</div>
+            </div>
+            <div class="sort-selector" id="sortSelector">
+                <i class="fas fa-sort" style="color:#00b4ff;"></i>
+                <select id="sortAlgorithm">
+                    <option value="bubble">Bubble</option>
+                    <option value="selection">Selection</option>
+                    <option value="insertion">Insertion</option>
+                </select>
+                <button class="success" id="sortBtn"><i class="fas fa-play"></i> Sort</button>
+                <button class="outline" id="shuffleBtn"><i class="fas fa-random"></i> Shuffle</button>
+            </div>
+        </div>
+
+        <div id="panel-home" class="panel active">
+            <div class="home-hero">
+                <h2>🚀 Explore Data Structures in 3D</h2>
+                <p>Click any card below to visualize operations with stunning 3D animations</p>
+            </div>
+            <div class="home-grid">
+                <div class="home-card" data-panel="array">
+                    <i class="fas fa-list"></i>
+                    <h3>Array</h3>
+                    <p>Push, Pop, Shift, Unshift with 3D slide animations</p>
+                    <span class="badge">4 operations</span>
+                </div>
+                <div class="home-card" data-panel="linkedlist">
+                    <i class="fas fa-link"></i>
+                    <h3>Linked List</h3>
+                    <p>Add/Remove head & tail with 3D transformations</p>
+                    <span class="badge">4 operations</span>
+                </div>
+                <div class="home-card" data-panel="stack">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>Stack</h3>
+                    <p>Push & Pop with container-style 3D animations</p>
+                    <span class="badge">3 operations</span>
+                </div>
+                <div class="home-card" data-panel="queue">
+                    <i class="fas fa-arrow-right-to-bracket"></i>
+                    <h3>Queue</h3>
+                    <p>Enqueue & Dequeue with 3D visual feedback</p>
+                    <span class="badge">4 operations</span>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:16px;color:rgba(255,255,255,0.3);font-size:0.9rem;">
+                <i class="fas fa-cube"></i> Hover over elements to see 3D effects · Sorting available on Array
+            </div>
+        </div>
+
+        <div id="panel-array" class="panel">
+            <div class="visual-area" id="array-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="array-input" placeholder="value" value="42">
+                    <button class="primary" id="arr-push"><i class="fas fa-plus-circle"></i> Push</button>
+                    <button class="primary" id="arr-unshift"><i class="fas fa-arrow-right"></i> Unshift</button>
+                    <button class="danger" id="arr-pop"><i class="fas fa-minus-circle"></i> Pop</button>
+                    <button class="danger" id="arr-shift"><i class="fas fa-arrow-left"></i> Shift</button>
+                </div>
+                <button class="outline" id="arr-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="array-info">size: 0</span>
+            </div>
+        </div>
+
+        <div id="panel-linkedlist" class="panel">
+            <div class="visual-area" id="list-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="list-input" placeholder="value" value="7">
+                    <button class="primary" id="list-addhead"><i class="fas fa-plus"></i> Add head</button>
+                    <button class="primary" id="list-addtail"><i class="fas fa-plus-circle"></i> Add tail</button>
+                    <button class="danger" id="list-removehead"><i class="fas fa-minus"></i> Remove head</button>
+                    <button class="danger" id="list-removetail"><i class="fas fa-minus-circle"></i> Remove tail</button>
+                </div>
+                <button class="outline" id="list-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="list-info">size: 0</span>
+            </div>
+        </div>
+
+        <div id="panel-stack" class="panel">
+            <div class="visual-area" style="background: rgba(0,0,0,0.15);">
+                <div class="stack-container-3d" id="stack-visual"></div>
+            </div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="stack-input" placeholder="value" value="99">
+                    <button class="primary" id="stack-push"><i class="fas fa-arrow-up"></i> Push</button>
+                    <button class="danger" id="stack-pop"><i class="fas fa-arrow-down"></i> Pop</button>
+                    <button class="outline" id="stack-peek"><i class="fas fa-eye"></i> Peek</button>
+                </div>
+                <button class="outline" id="stack-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="stack-info">size: 0</span>
+            </div>
+        </div>
+
+        <div id="panel-queue" class="panel">
+            <div class="visual-area" id="queue-visual"></div>
+            <div class="controls">
+                <div class="action-group">
+                    <input type="number" id="queue-input" placeholder="value" value="33">
+                    <button class="primary" id="queue-enqueue"><i class="fas fa-plus"></i> Enqueue</button>
+                    <button class="danger" id="queue-dequeue"><i class="fas fa-minus"></i> Dequeue</button>
+                    <button class="outline" id="queue-front"><i class="fas fa-arrow-right"></i> Front</button>
+                    <button class="outline" id="queue-rear"><i class="fas fa-arrow-left"></i> Rear</button>
+                </div>
+                <button class="outline" id="queue-reset"><i class="fas fa-undo-alt"></i> Reset</button>
+                <span class="info-badge" id="queue-info">size: 0</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
