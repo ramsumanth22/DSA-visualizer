@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D DSA Visualizer · Home</title>
+    <title>3D DSA Visualizer · Production Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,22 +13,23 @@
     <div class="glow-orb" style="width: 250px; height: 250px; background: #00d2ff; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 2s;"></div>
 
     <div class="container">
-        <h1><i class="fas fa-cube"></i> 3D DSA Visualizer</h1>
+        <h1><i class="fas fa-cube"></i>DSA Visualizer</h1>
 
         <div class="top-bar">
             <div class="ds-tabs">
-                <div class="ds-tab active" data-panel="home"><i class="fas fa-home"></i> Home</div>
+                <div class="ds-tab active" data-panel="home"><i class="fas fa-home"></i> Home Panel</div>
                 <div class="ds-tab" data-panel="array"><i class="fas fa-list"></i> Array</div>
                 <div class="ds-tab" data-panel="linkedlist"><i class="fas fa-link"></i> Linked List</div>
                 <div class="ds-tab" data-panel="stack"><i class="fas fa-layer-group"></i> Stack</div>
                 <div class="ds-tab" data-panel="queue"><i class="fas fa-arrow-right-to-bracket"></i> Queue</div>
             </div>
-            <div class="sort-selector" id="sortSelector">
+            
+            <div class="sort-selector" id="sortSelector" style="display: none;">
                 <i class="fas fa-sort" style="color:#00b4ff;"></i>
                 <select id="sortAlgorithm">
-                    <option value="bubble">Bubble</option>
-                    <option value="selection">Selection</option>
-                    <option value="insertion">Insertion</option>
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
                 </select>
                 <button class="success" id="sortBtn"><i class="fas fa-play"></i> Sort</button>
                 <button class="outline" id="shuffleBtn"><i class="fas fa-random"></i> Shuffle</button>
@@ -37,37 +38,91 @@
 
         <div id="panel-home" class="panel active">
             <div class="home-hero">
-                <h2>🚀 Explore Data Structures in 3D</h2>
-                <p>Click any card below to visualize operations with stunning 3D animations</p>
+                <h2>🚀 High-Performance DSA Dashboard</h2>
+                <p>Observe, trace, and interact with the primary pillars of computerized sorting and architectural memory allocation.</p>
             </div>
+
+            <div class="ds-section-title">
+                <span>01</span> Primitive Data Lab
+                <p>Predefined atomic values. Select a data type below to explore memory bounds and watch dynamic bit manipulation inside live system registers.</p>
+            </div>
+            
+            <div class="primitive-lab-container">
+                <div class="lab-controls">
+                    <select id="primitive-selector">
+                        <option value="int">Integer (int)</option>
+                        <option value="float">Float (float)</option>
+                        <option value="char">Character (char)</option>
+                        <option value="bool">Boolean (bool)</option>
+                    </select>
+                    <input type="text" id="primitive-input" value="42">
+                    <button class="success" id="primitive-update-btn"><i class="fas fa-sync"></i> Assign / Mutate</button>
+                </div>
+
+                <div class="lab-display">
+                    <div class="register-box">
+                        <span class="reg-label">Variable Value</span>
+                        <div class="reg-value" id="reg-val-out">42</div>
+                    </div>
+                    <div class="register-box">
+                        <span class="reg-label">Memory Allocation Size</span>
+                        <div class="reg-value" id="reg-size-out" style="color: #00b4ff;">4 Bytes (32-bit)</div>
+                    </div>
+                    <div class="register-box structural-binary">
+                        <span class="reg-label">Underlying Binary Stream (RAM View)</span>
+                        <div class="reg-value binary-stream" id="reg-bin-out">00000000 00000000 00000000 00101010</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ds-section-title">
+                <span>02</span> Non-Primitive Playgrounds
+                <p>Complex sequential collections formed by grouping primitive variables. Click any engine module card below to open its dedicated 3D visual workspace.</p>
+            </div>
+
             <div class="home-grid">
                 <div class="home-card" data-panel="array">
                     <i class="fas fa-list"></i>
-                    <h3>Array</h3>
-                    <p>Push, Pop, Shift, Unshift with 3D slide animations</p>
-                    <span class="badge">4 operations</span>
+                    <h3>Array (Linear)</h3>
+                    <p>Contiguous block structures handling values in index-mapped physical intervals.</p>
+                    <div class="ops-badge-group">
+                        <span class="badge">Push / Pop</span>
+                        <span class="badge">Shift / Unshift</span>
+                        <span class="badge">Sorting Algorithms</span>
+                    </div>
                 </div>
+
                 <div class="home-card" data-panel="linkedlist">
                     <i class="fas fa-link"></i>
-                    <h3>Linked List</h3>
-                    <p>Add/Remove head & tail with 3D transformations</p>
-                    <span class="badge">4 operations</span>
+                    <h3>Linked List (Linear)</h3>
+                    <p>Dispersed individual nodes linked sequentially together via unique dynamic pointer addresses.</p>
+                    <div class="ops-badge-group">
+                        <span class="badge">Insert Head/Tail</span>
+                        <span class="badge">Delete Head/Tail</span>
+                        <span class="badge">Linear Traversal</span>
+                    </div>
                 </div>
+
                 <div class="home-card" data-panel="stack">
                     <i class="fas fa-layer-group"></i>
-                    <h3>Stack</h3>
-                    <p>Push & Pop with container-style 3D animations</p>
-                    <span class="badge">3 operations</span>
+                    <h3>Stack (Linear)</h3>
+                    <p>Restricted access structure following strict Last-In, First-Out (LIFO) memory rules.</p>
+                    <div class="ops-badge-group">
+                        <span class="badge">Push Elements</span>
+                        <span class="badge">Pop Top Node</span>
+                        <span class="badge">Peek Pointer</span>
+                    </div>
                 </div>
+
                 <div class="home-card" data-panel="queue">
                     <i class="fas fa-arrow-right-to-bracket"></i>
-                    <h3>Queue</h3>
-                    <p>Enqueue & Dequeue with 3D visual feedback</p>
-                    <span class="badge">4 operations</span>
+                    <h3>Queue (Linear)</h3>
+                    <p>Open dual-ended delivery model operating under standard First-In, First-Out (FIFO) mechanics.</p>
+                    <div class="ops-badge-group">
+                        <span class="badge">Enqueue Back</span>
+                        <span class="badge">Dequeue Front</span>
+                    </div>
                 </div>
-            </div>
-            <div style="text-align:center;margin-top:16px;color:rgba(255,255,255,0.3);font-size:0.9rem;">
-                <i class="fas fa-cube"></i> Hover over elements to see 3D effects · Sorting available on Array
             </div>
         </div>
 
@@ -91,10 +146,10 @@
             <div class="controls">
                 <div class="action-group">
                     <input type="number" id="list-input" placeholder="value" value="7">
-                    <button class="primary" id="list-addhead"><i class="fas fa-plus"></i> Add head</button>
-                    <button class="primary" id="list-addtail"><i class="fas fa-plus-circle"></i> Add tail</button>
-                    <button class="danger" id="list-removehead"><i class="fas fa-minus"></i> Remove head</button>
-                    <button class="danger" id="list-removetail"><i class="fas fa-minus-circle"></i> Remove tail</button>
+                    <button class="primary" id="list-addhead"><i class="fas fa-plus"></i> Add Head</button>
+                    <button class="primary" id="list-addtail"><i class="fas fa-plus-circle"></i> Add Tail</button>
+                    <button class="danger" id="list-removehead"><i class="fas fa-minus"></i> Remove Head</button>
+                    <button class="danger" id="list-removetail"><i class="fas fa-minus-circle"></i> Remove Tail</button>
                 </div>
                 <button class="outline" id="list-reset"><i class="fas fa-undo-alt"></i> Reset</button>
                 <span class="info-badge" id="list-info">size: 0</span>
